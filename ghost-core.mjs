@@ -8,8 +8,11 @@ export function parseCrop(xml=''){
   const attrs={};
   for(const [,k,v] of m[1].matchAll(/\b(l|t|r|b)="(-?\d+)"/g)) attrs[k]=Number(v)/1000;
   const left=attrs.l||0, top=attrs.t||0, right=attrs.r||0, bottom=attrs.b||0;
-  const hiddenPercent=Math.max(0,Math.min(100,left+top+right+bottom));
-  return {left,top,right,bottom,hiddenPercent,visiblePercent:Math.max(0,100-hiddenPercent)};
+  const visibleWidth=Math.max(0,Math.min(100,100-left-right));
+  const visibleHeight=Math.max(0,Math.min(100,100-top-bottom));
+  const visiblePercent=Number((visibleWidth*visibleHeight/100).toFixed(4));
+  const hiddenPercent=Number((100-visiblePercent).toFixed(4));
+  return {left,top,right,bottom,hiddenPercent,visiblePercent};
 }
 
 export function isSlideHidden(xml=''){
