@@ -13,7 +13,7 @@ import {
 test('parseCrop converts OOXML srcRect percentages and reports hidden fraction', () => {
   const xml = `<p:pic><p:blipFill><a:srcRect l="35000" t="5000" r="10000" b="0"/></p:blipFill></p:pic>`;
   const crop = parseCrop(xml);
-  assert.deepEqual(crop, { left: 35, top: 5, right: 10, bottom: 0, hiddenPercent: 50, visiblePercent: 50 });
+  assert.deepEqual(crop, { left: 35, top: 5, right: 10, bottom: 0, hiddenPercent: 47.75, visiblePercent: 52.25 });
 });
 
 test('isSlideHidden detects show="0" and defaults visible when omitted', () => {
