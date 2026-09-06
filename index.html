@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="GhostLayer reveals recoverable content hiding inside ordinary PowerPoint files. Everything runs locally in your browser." />
+  <title>GhostLayer — see what the file still contains</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <script defer src="https://cdn.jsdelivr.net/npm/fflate@0.8.3/umd/index.js"></script>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="site-header shell">
+    <a class="brand" href="#" aria-label="GhostLayer home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>GhostLayer</span>
+    </a>
+    <div class="header-right">
+      <span class="local-pill"><span class="local-dot"></span> Local browser analysis</span>
+      <a class="small-link" href="https://support.microsoft.com/en-us/office/remove-hidden-data-and-personal-information-by-inspecting-documents-presentations-or-workbooks-356b7b5d-77af-44fe-a07f-9aa4d085966f" target="_blank" rel="noreferrer">Why this matters ↗</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero shell" id="hero">
+      <div class="hero-copy">
+        <p class="overline">VISIBLE ≠ DELETED</p>
+        <h1>Your PowerPoint<br><em>remembers.</em></h1>
+        <p class="lede">Cropping an image, hiding a slide, moving an object off-canvas, or leaving speaker notes can make content disappear from the slideshow without removing it from the file.</p>
+        <div class="hero-actions">
+          <button class="primary" id="specimenBtn">X-ray the planted board deck</button>
+          <label class="upload-button">
+            <input type="file" id="fileInput" accept=".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation" />
+            <span>Choose your own .pptx</span>
+          </label>
+        </div>
+        <p class="privacy-line"><span>⊘</span> Your uploaded presentation never leaves this browser.</p>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="file-orbit orbit-a"></div>
+        <div class="file-orbit orbit-b"></div>
+        <div class="deck-card">
+          <div class="deck-top"><span></span><span></span><span></span></div>
+          <div class="deck-label">BOARD-MEETING-FINAL.pptx</div>
+          <div class="fake-slide">
+            <div class="fake-kicker"></div>
+            <div class="fake-title"></div>
+            <div class="fake-chart"><b></b><b></b><b></b><b></b></div>
+            <div class="ghost-strip">PROJECT MICA · $18.5M</div>
+          </div>
+          <div class="deck-meta"><span>12 slides</span><span>4.2 MB</span><span>Final external</span></div>
+          <div class="scanner-line"></div>
+        </div>
+        <div class="float-tag tag-one">CROPPED ≠ ERASED</div>
+        <div class="float-tag tag-two">NOTES STILL INSIDE</div>
+      </div>
+    </section>
+
+    <section class="stage shell" id="stage" hidden>
+      <div class="stage-topbar">
+        <div>
+          <p class="overline" id="fileLabel">PRESENTATION X-RAY</p>
+          <h2 id="reportTitle">Recoverable state</h2>
+        </div>
+        <div class="stage-actions">
+          <button class="ghost-button" id="downloadSpecimen">Download specimen</button>
+          <button class="ghost-button" id="scanAnother">Scan another</button>
+        </div>
+      </div>
+
+      <div class="scan-view" id="scanView">
+        <div class="scan-core">
+          <div class="scan-ring r1"></div>
+          <div class="scan-ring r2"></div>
+          <div class="scan-ring r3"></div>
+          <div class="scan-file-icon">PPTX</div>
+        </div>
+        <div class="scan-copy">
+          <h3 id="scanHeadline">Opening the package</h3>
+          <p id="scanDetail">PowerPoint files are ZIP packages of XML, media, relationships, and metadata. GhostLayer is reading them locally.</p>
+          <div class="scan-progress"><span id="scanProgress"></span></div>
+          <ol class="scan-steps" id="scanSteps">
+            <li data-step="0"><span>01</span> Unpack OOXML</li>
+            <li data-step="1"><span>02</span> Compare visible crop vs embedded media</li>
+            <li data-step="2"><span>03</span> Inspect hidden slides + presenter notes</li>
+            <li data-step="3"><span>04</span> Locate objects outside the slide canvas</li>
+            <li data-step="4"><span>05</span> Read document identity metadata</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="report" id="report" hidden>
+        <section class="report-summary">
+          <div class="summary-copy">
+            <span class="eyebrow">WHAT THE RECIPIENT CAN RECOVER</span>
+            <div class="big-number"><span id="totalFindings">0</span><small>hidden items</small></div>
+            <p id="summarySentence">The slideshow does not show the whole file.</p>
+          </div>
+          <div class="severity-board">
+            <div><span class="sev critical"></span><b id="criticalCount">0</b><small>Critical</small></div>
+            <div><span class="sev warning"></span><b id="warningCount">0</b><small>Warning</small></div>
+            <div><span class="sev info"></span><b id="infoCount">0</b><small>Info</small></div>
+          </div>
+        </section>
+
+        <section class="forensic-grid">
+          <aside class="finding-list">
+            <div class="list-head">
+              <span>RECOVERABLE LAYERS</span>
+              <span id="slideCount">0 slides</span>
+            </div>
+            <div id="findingList"></div>
+          </aside>
+
+          <article class="reveal-panel" id="revealPanel">
+            <div class="reveal-header">
+              <div>
+                <span class="finding-type" id="findingType">CROP X-RAY</span>
+                <h3 id="findingTitle">Select a finding</h3>
+              </div>
+              <span class="risk-badge" id="riskBadge">WARNING</span>
+            </div>
+            <div id="findingBody" class="finding-body"></div>
+          </article>
+        </section>
+
+        <section class="file-truth">
+          <div>
+            <span class="eyebrow">THE EXPERIMENT</span>
+            <h3>One file. Two realities.</h3>
+          </div>
+          <div class="truth-columns">
+            <div><span>What presentation mode shows</span><b>Curated surface</b></div>
+            <div class="arrow">→</div>
+            <div><span>What the package still carries</span><b>Recoverable state</b></div>
+          </div>
+          <p>GhostLayer does not guess intent. It compares the normal presentation surface with information that remains structurally present inside the PPTX package.</p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <span>GhostLayer · a zero-backend browser experiment</span>
+    <span>Built for the GPT-6 Astra 24-hour ship challenge</span>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
